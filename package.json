@@ -1,0 +1,23 @@
+{
+  "name": "crypto-alert",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@jmac18/epoch": "^1.0.6",
+    "axios": "^1.2.2",
+    "dotenv": "^16.0.3",
+    "node-notifier": "^10.0.1",
+    "preferences": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18"
+  }
+}

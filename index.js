@@ -45,40 +45,37 @@ getConversionRate = async ({ from, to }) => {
   }
 }
 
-function load(){
-	const prefs = new Preferences('com.rami-majdoub.crypto-alert',{}, {
-	  encrypt: false,
-	  file: path.join(path.dirname(process.cwd()), '.prefs'),
-	  format: 'yaml'
-	});
-	
-	return Epoch().days(0).hours(24).ago > (prefs.last_check || 0);
-}
+const loadPrefs = () => new Preferences('com.rami-majdoub.crypto-alert',{}, {
+  encrypt: false,
+  file: path.join(path.dirname(process.cwd()), '.prefs'),
+  format: 'yaml'
+});
 
-function save(){
-	const prefs = new Preferences('com.rami-majdoub.crypto-alert',{}, {
-	  encrypt: false,
-	  file: path.join(path.dirname(process.cwd()), '.prefs'),
-	  format: 'yaml'
-	});
-	
-	prefs.last_check = Epoch().now;
-	// console.log(prefs.last_check);
-}
+const overridePrefs = (prefs) => prefs.last_check = Epoch().days(0).hours(24 +1).ago;
+const load = (prefs) => Epoch().days(0).hours(24).ago > Epoch(prefs.last_check || 0).now;
+const save = (prefs) => prefs.last_check = Epoch().now;
 
 async function main(){
-	const canrun = load();
-	if(!canrun) return;
+	const prefs = loadPrefs();
 	
+	// overridePrefs(prefs);
+	console.log(`date: ${Epoch().now}`);
+	
+	if( cooldown = false ){
+		const canrun = load(prefs);
+		if(!canrun) return;
+	}
+	
+	// BAT > 3.5 GRT:BTC < 20000 USD
 	const rate = await getConversionRate({ from: "BAT", to: "GRT" });
-	if (rate > 3.5){
+	if (rate >= 2.25){
 		notifier.notify({
 		  title: 'Crpto alert',
 		  message: 'Conversion rate satisfied'
 		});
-		save();
+		save(prefs);
 	}
-	// console.log(rate);
+	console.log(`Rate: ${rate}`);
 }
 
 main()

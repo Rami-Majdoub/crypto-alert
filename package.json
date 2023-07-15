@@ -1,14 +1,32 @@
 {
   "name": "crypto-alert",
   "version": "1.0.0",
-  "description": "",
+  "description": "Get an alert when a token exceeds a limit",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "crypto",
+    "fiat",
+    "cryptocurrency",
+    "exchange rate",
+    "currency"
+  ],
+  "bin": {
+    "crypto-alert": "run"
+  },
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Rami-Majdoub/crypto-alert.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Rami-Majdoub/crypto-alert/issues"
+  },
+  "homepage": "https://github.com/Rami-Majdoub/crypto-alert",
+  "author": "Rami Majdoub",
   "license": "ISC",
   "dependencies": {
     "@jmac18/epoch": "^1.0.6",

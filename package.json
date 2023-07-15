@@ -14,6 +14,7 @@
     "@jmac18/epoch": "^1.0.6",
     "axios": "^1.2.2",
     "dotenv": "^16.0.3",
+    "minimist": "^1.2.8",
     "node-notifier": "^10.0.1",
     "preferences": "^2.0.2"
   },

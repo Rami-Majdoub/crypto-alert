@@ -17,6 +17,7 @@
   "bin": {
     "crypto-alert": "run"
   },
+  "preferGlobal": true,
   "contributors": [],
   "repository": {
     "type": "git",

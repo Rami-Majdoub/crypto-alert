@@ -5,7 +5,15 @@ const Preferences = require("preferences");
 const path = require('node:path');
 const { Epoch } = require("@jmac18/epoch");
 
-const { requests, dev } = require('minimist')(process.argv.slice(2));
+const args = require('minimist')(process.argv.slice(2));
+const { snooze, requests, noSnooze } = args;
+
+const startTime = Epoch().now;
+
+const snoozeSplit = snooze?.split(":");
+const snoozeD = snoozeSplit?.[0] || 1;
+const snoozeH = snoozeSplit?.[1] || 0;
+const snoozeM = snoozeSplit?.[2] || 0;
 
 const getConversionRate = async ({ from, to }) => {
   let response;
@@ -26,18 +34,15 @@ const getConversionRate = async ({ from, to }) => {
 }
 
 const loadPrefs = () => new Preferences('com.rami-majdoub.crypto-alert',{}, {
-  encrypt: false,
-  file: path.join(path.dirname(process.cwd()), '.prefs'),
-  format: 'yaml'
+  encrypt: false
 });
 
-const overridePrefs = (prefs) => prefs.last_check = Epoch().days(0).hours(24 +1).ago;
-const load = (prefs) => Epoch().days(0).hours(24).ago > Epoch(prefs.last_check || 0).now;
-const save = (prefs) => prefs.last_check = Epoch().now;
+const isSnoozed = (prefs) => Epoch().days(snoozeD).hours(snoozeH).minutes(snoozeM).ago < Epoch(prefs.last_check || 0).now;
+const save = (prefs) => prefs.last_check = startTime || Epoch().now;
 
 const showAlert= (request) => {
 	notifier.notify({
-	  title: 'Crpto alert (Conversion rate satisfied)',
+	  title: 'Crpto alert | Conversion rate satisfied',
 	  message: request
 	});
 }
@@ -45,8 +50,8 @@ const showAlert= (request) => {
 const prefs = loadPrefs();
 console.log(`date: ${Epoch().now}`);
 
-if(!dev){
-	const canrun = load(prefs);
+if(!noSnooze){
+	const canrun = !isSnoozed(prefs);
 	if(!canrun) return;
 }
 
@@ -54,17 +59,16 @@ const check = async (request) => {
 	const [from, operator, amount, to] = request.split(" ");
 	
 	const rate = await getConversionRate({ from, to });
-	console.log({ from, to, rate });
+	console.log({ request, rate });
 	if (
 		operator == ">" && rate > amount
 		|| operator == "<" && rate < amount
 	){
 		showAlert(request);
-		if(!dev){
+		if(!noSnooze){
 			save(prefs);
 		}
 	}
-	console.log(`Rate: ${rate}`);
 }
 
 (async () => {
